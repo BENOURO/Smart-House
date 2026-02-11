@@ -93,11 +93,3 @@ docker-compose exec frontend npm install <package-name>
 # Access MongoDB shell
 docker-compose exec mongodb mongosh -u admin -p admin123
 ```
-
-## Next Steps
-
-- Add routes and controllers to the NestJS backend
-- Create components and services in the Angular frontend
-- Define MongoDB schemas and models in NestJS
-- Implement authentication and authorization
-- Add environment-specific configurations
