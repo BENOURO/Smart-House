@@ -1,0 +1,6 @@
+[submodule "src/so-webclient"]
+	path = src/so-webclient
+	url = git@bitbucket.org:safeops/so-webclient.git
+[submodule "src/so-api"]
+	path = src/so-api
+	url = git@bitbucket.org:safeops/so-api.git

@@ -1,0 +1,61 @@
+name: smarthouse
+services:
+  api:
+    build:
+      context: ../../src/sh-api
+      target: development
+      dockerfile: ../../.infra/dockerfiles/api.dockerfile
+    container_name: sh-api
+    tty: true
+    volumes:
+      - ../../src/sh-api/:/usr/src/api
+    environment:
+      NODE_ENV: development
+      MONGODB_URI: mongodb://sh-user:smarthouse@db:27017/smarthouse?authSource=admin
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    networks:
+      - smarthouse
+
+  client:
+    build:
+      context: ../../src/sh-client
+      target: development
+      dockerfile: ../../.infra/dockerfiles/client.dockerfile
+    container_name: sh-client
+    tty: true
+    volumes:
+      - ../../src/sh-client/:/usr/src/client
+      - node_modules:/usr/src/client/node_modules
+    environment:
+      NODE_ENV: development
+    ports:
+      - "4200:4200"
+    networks:
+      - smarthouse
+
+  
+  db:
+    image: mongo:8
+    volumes:
+      - mongo_data:/data/db
+      - ../mongodb/initdb:/docker-entrypoint-initdb.d
+    container_name: sh-db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: smarthouse
+      MONGO_INITDB_DATABASE: smarthouse
+    ports:
+      - "27017:27017"
+    networks:
+      - smarthouse
+
+volumes:
+  mongo_data:
+  node_modules:
+
+networks:
+  smarthouse:
+    driver: bridge

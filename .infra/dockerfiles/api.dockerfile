@@ -1,0 +1,81 @@
+###################
+# BUILD FOR LOCAL DEVELOPMENT
+###################
+
+FROM node:22 AS development
+
+# Create api directory
+WORKDIR /usr/src/api
+
+# Copy application dependency manifests to the container image.
+# A wildcard is used to ensure copying both package.json AND package-lock.json (when available).
+# Copying this first prevents re-running npm install on every code change.
+COPY package*.json ./
+
+RUN npm install
+
+# Bundle app source
+COPY . .
+
+# Create the dist folder with proper ownership and permissions
+RUN mkdir -p /usr/src/api/dist && \
+    chown -R node:node /usr/src/api/dist && \
+    chmod -R 775 /usr/src/api/dist
+
+# Use the node user from the image (instead of the root user)
+USER node
+
+
+###################
+# BUILD FOR PRODUCTION
+###################
+
+FROM node:22 AS build
+
+WORKDIR /usr/src/api
+
+# Copy package files
+COPY --chown=node:node package*.json ./
+
+
+RUN chown -R node:node /usr/src/api
+
+
+RUN npm ci
+
+
+COPY --chown=node:node . .
+
+
+RUN npm run build
+
+
+
+
+FROM node:22 AS production
+
+WORKDIR /usr/src/api
+
+
+RUN npm install -g @nestjs/cli
+
+
+RUN apt-get update && apt-get install -y curl && curl -sL https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz | tar xz -C /usr/local/bin
+
+
+COPY --chown=node:node package*.json ./
+
+
+RUN npm ci --omit=dev && npm cache clean --force
+
+
+COPY --chown=node:node --from=build /usr/src/api/dist ./dist
+
+
+RUN chown -R node:node /usr/src/api && chmod -R 775 /usr/src/api
+
+
+USER node
+
+
+CMD ["dockerize", "-wait", "tcp://db:27017", "-timeout", "30s", "npm", "run", "start:prod"]
