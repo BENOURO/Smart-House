@@ -6,9 +6,12 @@ services:
       target: development
       dockerfile: ../../.infra/dockerfiles/api.dockerfile
     container_name: sh-api
+    user: root
     tty: true
+    command: sh -c "npm install && npm run start:dev"
     volumes:
       - ../../src/sh-api/:/usr/src/api
+      - api_node_modules:/usr/src/api/node_modules
     environment:
       NODE_ENV: development
       MONGODB_URI: mongodb://sh-user:smarthouse@db:27017/smarthouse?authSource=admin
@@ -25,7 +28,9 @@ services:
       target: development
       dockerfile: ../../.infra/dockerfiles/client.dockerfile
     container_name: sh-client
+    user: root
     tty: true
+    command: sh -c "npm install && npm start"
     volumes:
       - ../../src/sh-client/:/usr/src/client
       - node_modules:/usr/src/client/node_modules
@@ -55,6 +60,7 @@ services:
 volumes:
   mongo_data:
   node_modules:
+  api_node_modules:
 
 networks:
   smarthouse:

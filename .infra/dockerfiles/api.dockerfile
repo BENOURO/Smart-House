@@ -2,7 +2,7 @@
 # BUILD FOR LOCAL DEVELOPMENT
 ###################
 
-FROM node:22 AS development
+FROM node:22-alpine AS development
 
 # Create api directory
 WORKDIR /usr/src/api
@@ -18,12 +18,9 @@ RUN npm install
 COPY . .
 
 # Create the dist folder with proper ownership and permissions
-RUN mkdir -p /usr/src/api/dist && \
-    chown -R node:node /usr/src/api/dist && \
-    chmod -R 775 /usr/src/api/dist
+RUN mkdir -p /usr/src/api/dist
 
-# Use the node user from the image (instead of the root user)
-USER node
+EXPOSE 3000
 
 
 ###################

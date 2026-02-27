@@ -22,11 +22,11 @@ dci-down:
 	docker compose -f $(DOCKER_COMPOSE_DEV_FILE) down
 
 dci-api-shell:
-	docker exec -it so-api bash
+	docker exec -it sh-api sh
 
 
 dci-client-shell:
-	docker exec -it so-webclient bash
+	docker exec -it sh-client sh
 
 dci-db-shell:
-	docker exec -it so-db sh
+	docker exec -it sh-db sh

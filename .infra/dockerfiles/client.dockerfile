@@ -1,7 +1,7 @@
 ###################
 # DEVELOPMENT
 ###################
-FROM node:22 AS development
+FROM node:22-alpine AS development
 
 WORKDIR /usr/src/client
 
@@ -15,9 +15,6 @@ COPY . .
 
 # Expose port for Angular development server
 EXPOSE 4200
-
-# Command for development mode
-# CMD ["npm", "run", "start"]
 
 
 ###################
