@@ -16,6 +16,8 @@ COPY . .
 # Expose port for Angular development server
 EXPOSE 4200
 
+CMD ["npm", "run", "start"]
+
 
 ###################
 # PRODUCTION

@@ -22,6 +22,8 @@ RUN mkdir -p /usr/src/api/dist
 
 EXPOSE 3000
 
+CMD ["npm", "run", "start:dev"]
+
 
 ###################
 # BUILD FOR PRODUCTION
